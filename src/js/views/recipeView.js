@@ -8,7 +8,7 @@ import { Fraction } from 'fractional';
 class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
   _errorMessage = 'We could not find that recipe. Please try another one!';
-  _message = '';
+  _message = 'The recipe was successfully deleted';
 
   addHandlerRecipeServings(handler) {
     this._parentElement.addEventListener('click', e => {
@@ -25,6 +25,15 @@ class RecipeView extends View {
       if (!e.target.closest('.btn--bookmark')) return;
 
       handler();
+    });
+  }
+
+  addHandlerRemoveRecipe(handler) {
+    this._parentElement.addEventListener('click', e => {
+      const btn = e.target.closest('.recipe__btn--delete');
+      if (!btn) return;
+
+      handler(this._data.id);
     });
   }
 
@@ -114,13 +123,24 @@ class RecipeView extends View {
                 <use href="${icons}#icon-arrow-right"></use>
               </svg>
             </a>
-          </div>`;
+          </div>
+          <button
+              class="btn--small recipe__btn recipe__btn--delete
+                      ${!this._data.key ? '__hidden' : ''}"
+              href="${this._data.sourceUrl}"
+              target="_blank"
+            >
+              <span>Delete</span>
+              <svg class="search__icon">
+                <use href="${icons}#icon-arrow-right"></use>
+              </svg>
+            </button>`;
   }
 
   _generateMarkupIngredient(ing) {
     return `<li class="recipe__ingredient">
                 <svg class="recipe__icon">
-                  <use href="${icons}#icon-check"></use>
+                  <use href="${icons}#icon-alert-circle"></use>
                 </svg>
                 <div class="recipe__quantity">${
                   ing.quantity ? new Fraction(ing.quantity).toString() : ''

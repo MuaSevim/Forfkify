@@ -9,6 +9,7 @@ class AddRecipeView extends View {
   _btnOpen = document.querySelector('.nav__btn--add-recipe');
   _btnClose = document.querySelector('.btn--close-modal');
   _message = 'Recipe was successfully added';
+  _currentIngredient = 3;
 
   constructor() {
     super();
@@ -37,6 +38,20 @@ class AddRecipeView extends View {
     });
   }
 
+  addHandlerIngredient(handler) {
+    this._parentElement.addEventListener('click', e => {
+      const btn = e.target.closest('.add-ingredient__btn');
+      if (!btn) return;
+
+      const { ing } = btn.dataset;
+      console.log(+ing);
+      if (+ing === 8) return;
+
+      handler();
+      btn.dataset.ing = +ing + 1;
+    });
+  }
+
   _generateMarkup() {
     return `<div class="upload__column">
           <h3 class="upload__heading">Recipe data</h3>
@@ -56,6 +71,7 @@ class AddRecipeView extends View {
 
         <div class="upload__column">
           <h3 class="upload__heading">Ingredients</h3>
+          <div class="ingredients">
           <label>Ingredient 1</label>
           <input
             value="0.5,kg,Rice"
@@ -78,32 +94,22 @@ class AddRecipeView extends View {
             name="ingredient-3"
             placeholder="Format: 'Quantity,Unit,Description'"
           />
-          <label>Ingredient 4</label>
-          <input
-            type="text"
-            name="ingredient-4"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
-          <label>Ingredient 5</label>
-          <input
-            type="text"
-            name="ingredient-5"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
-          <label>Ingredient 6</label>
-          <input
-            type="text"
-            name="ingredient-6"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
+
         </div>
+        <button type="button" class="btn add-ingredient__btn" data-ing="${this._currentIngredient}">
+            <svg>
+              <use href="${icons}#icon-plus-circle"></use>
+            </svg>
+            <span>Add Ingredient</span>
+        </button>
 
         <button class="btn upload__btn">
           <svg>
             <use href="${icons}#icon-upload-cloud"></use>
           </svg>
           <span>Upload</span>
-        </button>`;
+        </button>
+      </div>`;
   }
 }
 
