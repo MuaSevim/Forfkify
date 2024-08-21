@@ -1,5 +1,4 @@
-import { API_KEY, API_URL, RES_PER_PAGE } from './config.js';
-// import { getJSON, sendJSON } from './helpers.js';
+import { API_KEY, API_URL, MAX_INGREDIENT, RES_PER_PAGE } from './config.js';
 import { AJAX } from './helpers.js';
 
 export const state = {
@@ -11,7 +10,12 @@ export const state = {
     resultsPerPage: RES_PER_PAGE,
   },
   bookmarks: [],
+  ingredients: {
+    current: 3,
+    max: MAX_INGREDIENT,
+  },
 };
+// sort: [alphabetical, duration, numIngredients, publishedAt],
 
 const createRecipeObject = function (data) {
   // extracting RAW data
@@ -142,12 +146,22 @@ export const uploadRecipe = async function (newRecipe) {
       ingredients,
     };
 
-    const data = await AJAX(`${API_URL}?key=${API_KEY}`, recipe);
-    console.log(data);
-
+    const data = await AJAX(`${API_URL}?key=${API_KEY}`, 'POST', recipe);
     state.recipe = createRecipeObject(data);
     addBookmark(state.recipe);
   } catch (err) {
     throw err;
   }
+};
+
+export const removeRecipe = async function (id) {
+  try {
+    await AJAX(`${API_URL}${id}?key=${API_KEY}`, 'DELETE');
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const addIngredient = function () {
+  state.ingredients.current++;
 };

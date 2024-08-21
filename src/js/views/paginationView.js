@@ -19,21 +19,25 @@ class PaginationView extends View {
       this._data.results.length / this._data.resultsPerPage
     );
     const currentPage = this._data.page;
+    const elPageNumber = `<p class="page-number">${currentPage}/${numPages}</p>`;
 
     if (currentPage === 1 && numPages > 1) {
-      return this._generateMarkupButton('next', currentPage);
+      return elPageNumber.concat(
+        this._generateMarkupButton('next', currentPage)
+      );
     }
 
     // Last Page
     if (currentPage === numPages && numPages > 1) {
-      return this._generateMarkupButton('prev', currentPage);
+      return this._generateMarkupButton('prev', currentPage).concat(
+        elPageNumber
+      );
     }
 
     if (numPages > 1) {
-      return (
-        this._generateMarkupButton('prev', currentPage) +
-        this._generateMarkupButton('next', currentPage)
-      );
+      return this._generateMarkupButton('prev', currentPage)
+        .concat(elPageNumber)
+        .concat(this._generateMarkupButton('next', currentPage));
     }
 
     return '';

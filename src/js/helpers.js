@@ -8,23 +8,24 @@ export const timeout = function (s) {
   });
 };
 
-export const AJAX = async function (url, data = undefined) {
+export const AJAX = async function (url, method = undefined, data = undefined) {
   try {
-    console.log(url, data);
-    const fetchPro = data
-      ? fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
-      : fetch(url);
+    const options = {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      ...(data && { body: JSON.stringify(data) }),
+    };
+
+    const fetchPro = method ? fetch(url, options) : fetch(url);
+
     const res = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)]);
 
     if (!res.ok) throw new Error(`One test: ${data.message} (${data.status})`);
 
-    return res.json();
+    if (method !== 'DELETE') return res.json();
+    // Return the data
   } catch (err) {
     throw err;
   }
